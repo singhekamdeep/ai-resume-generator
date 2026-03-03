@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const { registerUserController, loginUserController } = require('../controllers/auth.controller')
+const { registerUserController, loginUserController, logoutUserController } = require('../controllers/auth.controller')
 const authRouter = Router()
 
 /**
@@ -11,9 +11,17 @@ authRouter.post("/register", registerUserController)
 
 /**
  * @route POST /api/auth/login
- * @description register an existing user
+ * @description logs in an existing user
  * @access Public
  */
 authRouter.post("/login", loginUserController)
+
+
+/**
+ * @route GET /api/auth/logout
+ * @description logouts the loggedIn user, clear cookie from client & add to blacklist
+ * @access Public
+ */
+authRouter.get("/logout", logoutUserController)
 
 module.exports = authRouter
