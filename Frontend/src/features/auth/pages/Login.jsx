@@ -1,15 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { useAuth } from '../hooks/useAuth'
 import "../auth.form.scss"
 
 
 const Login = () => {
 
+  const { loading, handleLogin } = useAuth()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    navigate("/")
+    try {
+      await handleLogin({email, password})
+      setEmail("")
+      setPassword("")
+      navigate("/")
+    } catch (err) {
+      console.error("Login failed", err)
+    }
+  }
+
+  if(loading){
+    return (<main><h1>Loading....</h1></main>)
   }
 
   return (
@@ -22,13 +38,28 @@ const Login = () => {
 
           <div className="input-group">
             <label htmlFor="email">Email</label>
-            <input type="email" id='email' name='email' placeholder='Enter your email' />
+            <input 
+              type="email" 
+              id='email' 
+              name='email' 
+              placeholder='Enter your email' 
+              value={email}
+              onChange={(e)=>{setEmail(e.target.value)}}
+            />
           </div>
 
           <div className="input-group">
             <label htmlFor="password">Password</label>
-            <input type="password" id='password' name='password' placeholder='Enter password' />
+            <input 
+              type="password" 
+              id='password' 
+              name='password' 
+              placeholder='Enter password' 
+              value={password}
+              onChange={(e)=>{setPassword(e.target.value)}}
+            />
           </div>
+
           <button type='submit' className='button primary-button' >Login</button>
         </form>
 
