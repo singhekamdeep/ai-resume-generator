@@ -1,4 +1,5 @@
 const pdfParser = require('pdf-parse')
+const path = require('path')
 const { generateInterviewReport } = require('../services/ai.service')
 const interviewReportModel = require('../models/interviewReport.model')
 
@@ -7,7 +8,9 @@ const interviewReportModel = require('../models/interviewReport.model')
  * resume, & job description
  */
 const generateInterviewReportController = async (req, res) => {
-  const resumeContent = await ( new pdfParser.PDFParse(Uint8Array.from(req.file.buffer))).getText()
+  const resumeContent = await ( new pdfParser.PDFParse(Uint8Array.from(req.file.buffer), {
+    standardFontDataUrl: path.join(process.cwd(), 'node_modules', 'pdfjs-dist', 'standard_fonts') + '/'
+  })).getText()
   const { selfDescription, jobDescription } = req.body
 
   const interviewReportFromAI = await generateInterviewReport({
